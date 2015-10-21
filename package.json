@@ -1,0 +1,32 @@
+{
+  "name": "phr-core",
+  "version": "0.0.0",
+  "description": "Personal Health Record middleware for Patient which is capable of install/remove applications.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/softbrew/phr-core.git"
+  },
+  "keywords": [
+    "phr",
+    "fhir",
+    "patient"
+  ],
+  "author": "Milan Karunarathne",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/softbrew/phr-core/issues"
+  },
+  "homepage": "https://github.com/softbrew/phr-core#readme",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  },
+  "dependencies": {
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "nano": "^6.1.5"
+  }
+}
