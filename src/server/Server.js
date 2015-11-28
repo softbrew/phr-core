@@ -9,14 +9,15 @@
 import express from 'express';
 import path from 'path';
 
-import {
-    router as login
-}
-from 'Login';
+import LoginRouter from '../routes/Login';
 
 let Server = express();
 
+// Setup environment
+//Server.use('/public', express.static('public'));
+Server.use('/public', express.static('/home/milan/softbrew/dashboard/public'));
+
 // Set routes
-Server.use('/', login);
+Server.use('/', LoginRouter);
 
 export default Server;

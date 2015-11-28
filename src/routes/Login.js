@@ -6,10 +6,10 @@
 
 import express from 'express';
 
-let router = express.Router();
+let LoginRouter = express.Router();
 
-router.get('/', (req, res, next) => {
-
+LoginRouter.get('/', (req, res, next) => {
+    res.redirect('/public/index.html');
 });
 
-export default router;
+export default LoginRouter;
