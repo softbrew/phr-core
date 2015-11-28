@@ -1,4 +1,6 @@
-{
+const config = {
   "hostAddress": "LOCALHOST",
   "hostPort": "8000"
-}
+};
+
+export default config;
