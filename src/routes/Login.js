@@ -6,10 +6,15 @@
 
 import express from 'express';
 
-let router = express.Router();
+let LoginRouter = express.Router();
 
-router.get('/', (req, res, next) => {
-
+LoginRouter.get('/', (req, res, next) => {
+    res.redirect('/public/index.html');
 });
 
-export default router;
+LoginRouter.get('/signup', (req, res) => {
+    res.send('viewed this page ' + req.session.views['/signup'] +
+        ' times');
+});
+
+export default LoginRouter;

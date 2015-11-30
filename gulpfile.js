@@ -18,28 +18,30 @@ var errorReporter = function(files) {
     });
 };
 
-var paths = {
+const paths = {
     scripts: ['src/index.js', 'src/lib/**/*.js', 'src/server/**/*.js',
         'src/routes/*.js'
     ],
     hints: ['src/lib/**/*.js', 'src/server/**/*.js', 'test/**/*.js']
 };
 
-gulp.task('default', function() {
+gulp.task('default', () => {
     return gulp.src('src/index.js')
         .pipe(webpack(require('./webpack.config.js')))
         .pipe(gulp.dest('dist/'));
 });
 
-gulp.task('develop', function() {
-    nodemon({
+gulp.task('develop', () => {
+    process.env.DEBUG = 'src:*';
+
+    return nodemon({
             script: './dist/server.js',
             ext: 'js',
             // WARNING: Need to remove `dist` to avoid looping
             ignore: ['dist', 'node_modules', 'bower_components'],
             tasks: ['default']
         })
-        .on('restart', function() {
+        .on('restart', () => {
             console.log('restarted!');
         });
 });

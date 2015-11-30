@@ -3,6 +3,7 @@ config.js
 
 # Build directories
 dist
+public
 
 # Logs
 logs
