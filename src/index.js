@@ -8,13 +8,15 @@
 
 'use strict';
 
-require('source-map-support').install();
+//import 'source-map-support/register';
+require('source-map-support').install({
+    environment: 'node'
+});
 
 // Module dependencies
 import http from 'http';
-import d from 'debug';
 import Server from './server/Server';
-
+import d from 'debug';
 let debug = d('src:index');
 import config from '../config';
 console.log(config);
