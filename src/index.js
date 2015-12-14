@@ -15,11 +15,15 @@ require('source-map-support').install({
 
 // Module dependencies
 import http from 'http';
+import express from 'express';
 import Server from './server/Server';
 import d from 'debug';
 let debug = d('src:index');
 import config from '../config';
 console.log(config);
+
+// Serve Client Side files
+Server.use('/public', express.static(__dirname + config.staticFilesDirectory));
 
 /**
  * Get port from environment and store in Express.

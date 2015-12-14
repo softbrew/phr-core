@@ -6,6 +6,8 @@
 
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import axios from 'axios';
+let debug = require('debug')('src:routes/login');
 
 let LoginRouter = express.Router();
 
@@ -43,6 +45,18 @@ LoginRouter.post('/signin', (req, res) => {
 LoginRouter.get('/signup', (req, res) => {
     res.json({
         message: 'SignUp successful.'
+    });
+});
+
+LoginRouter.post('/import/patient', (req, res) => {
+    debug('Import Patient: ', req.body);
+    axios.get(`/Patient/${req.body.patientId}`, {
+        baseURL : req.body.baseURL
+    }).then(response => {
+        console.log('Patient: ', response.data);
+        res.json(response.data);
+    }).catch(err => {
+        console.error(err);
     });
 });
 
