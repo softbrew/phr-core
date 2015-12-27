@@ -1,6 +1,7 @@
 const config = {
-  "hostAddress": "LOCALHOST",
-  "hostPort": "8000"
+  "hostAddress": "localhost",
+  "hostPort": "8000",
+  "staticFilesDirectory": "/home/{username}/softbrew/dashboard/public"
 };
 
 export default config;
