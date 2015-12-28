@@ -16,32 +16,44 @@ let db = nano.db.use('phr_user');
 
 // Authenticate user login
 LoginRouter.post('/signin', (req, res) => {
-    //TODO validate username and password
+    // TODO: validate username and password
     debug('/signin : ', req.body);
 
-    if(!(req.body.username === 'milan' && req.body.password ===
-            'abc123')) {
-        //if is invalid, return 401
-        res.status(401).json({
-            error: 'Wrong username or password.'
-        });
-        return;
-    }
+    users.get(req.body.username, (err, user) => {
+        debug('/signin get user: ', err, ' user: ', user);
 
-    let profile = {
-        first_name: 'Milan',
-        last_name: 'Karunarathne',
-        email: 'mhkarunarathne@gmail.com',
-        id: 123
-    };
+        if(user) {
+            if(!(req.body.username === user.username &&
+                    req.body.password === user.password)) {
+                //if is invalid, return 401
+                res.status(401).json({
+                    error: 'Wrong username or password.'
+                });
+                return;
+            }
 
-    // sending the profile inside the token
-    let token = jwt.sign(profile, 'secret', {
-        expiresIn: '1h',
-    });
-
-    res.json({
-        token: token
+            let newUser = {
+                id: user._id,
+                rev: user._rev,
+                username: user.username,
+                email: user.email,
+                name: user.name
+            };
+            // sending the profile inside the token
+            let token = jwt.sign(newUser, 'secret', {
+                expiresIn: '1h'
+            });
+            res.json({
+                token: token,
+                user: newUser
+            });
+        } else {
+            res.status(err.statusCode).json({
+                name: err.name,
+                error: err.error,
+                reason: err.reason
+            });
+        }
     });
 });
 
@@ -54,7 +66,7 @@ LoginRouter.post('/signup', (req, res) => {
     user.email = req.body.email;
     user.password = req.body.password;
     // Create a new User in PHR database
-    users.insert(req.body, req.body.username, (err, body) => {
+    users.insert(user, user.username, (err, body) => {
         if(body) {
             debug('/signup create user: ', err, ' body: ', body);
 
@@ -71,7 +83,8 @@ LoginRouter.post('/signup', (req, res) => {
             });
 
             res.json({
-                token: token
+                token: token,
+                user: newUser
             });
         } else {
             res.status(err.statusCode).json({
