@@ -14,6 +14,36 @@ let debug = require('debug')('src:routes/login');
 let LoginRouter = express.Router();
 let db = nano.db.use('phr_user');
 
+// Get user details
+LoginRouter.get('/:username', (req, res) => {
+    debug('/:username : ', req.params.username);
+
+    let username = req.params.username || '';
+    users.get(username, (err, user) => {
+        debug('/:username get user: ', err, ' user: ', user);
+
+        if(user) {
+            let newUser = {
+                id: user._id,
+                rev: user._rev,
+                username: user.username,
+                email: user.email,
+                name: user.name
+            };
+
+            res.json({
+                user: newUser
+            });
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    }); // END - GetUser
+});
+
 // Authenticate user login
 LoginRouter.post('/signin', (req, res) => {
     // TODO: validate username and password
@@ -49,14 +79,15 @@ LoginRouter.post('/signin', (req, res) => {
             });
         } else {
             res.status(err.statusCode).json({
-                name: err.name,
-                error: err.error,
-                reason: err.reason
+                type: err.name,
+                message: err.reason,
+                error: err.error
             });
         }
     });
 });
 
+// Create a new user
 LoginRouter.post('/signup', (req, res) => {
     debug('/signup : ', req.body);
 
@@ -88,14 +119,15 @@ LoginRouter.post('/signup', (req, res) => {
             });
         } else {
             res.status(err.statusCode).json({
-                name: err.name,
-                error: err.error,
-                reason: err.reason
+                type: err.name,
+                message: err.reason,
+                error: err.error
             });
         }
     });
 });
 
+// import Patient form third party FHIR server
 LoginRouter.post('/import/patient', (req, res) => {
     debug('Import Patient: ', req.body);
     axios.get(`/Patient/${req.body.patientId}`, {
@@ -105,6 +137,11 @@ LoginRouter.post('/import/patient', (req, res) => {
         res.json(response.data);
     }).catch(err => {
         console.error(err);
+        res.status(404).json({
+            type: 'not_found',
+            message: 'Unable to import patient.',
+            error: new Error('Unable to import patient.')
+        });
     });
 });
 
