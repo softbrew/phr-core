@@ -21,7 +21,7 @@ AppsRouter.post('/:appId/:username', (req, res) => {
 
     let App = nano.use(`phr_apps_${appId}`);
     // Categorize with User
-    data.username = username;
+    data.type = username;
 
     App.insert(data, (err, body) => {
         if(body) {
@@ -37,21 +37,45 @@ AppsRouter.post('/:appId/:username', (req, res) => {
     });
 });
 
-AppsRouter.get('/', (req, res) => {
-    debug('AppsRouter GET : ', req.params);
+AppsRouter.get('/:appId/:username', (req, res) => {
+    let appId = req.params.appId;
+    let username = req.params.username;
+    debug('AppsRouter POST : ', appId, username, req.query);
 
-    let data = req.params || {};
-    res.json(data);
+    let query = req.query || {};
+
+    let App = nano.use(`phr_apps_${appId}`);
+    // Query with User
+    query.username = username;
+
+    App.view('apps', 'by_type', {"key": username}, (err, body) => {
+        if(body) {
+            debug('/apps get : ', err, ' body: ', body);
+            console.log(body.rows);
+            let rows = [];
+            for(let row of body.rows) {
+                delete row.value.type;
+                rows.push(row.value);
+            }
+            res.json(rows);
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
 });
 
-AppsRouter.put('/', (req, res) => {
+AppsRouter.put('/:appId/:username', (req, res) => {
     debug('AppsRouter PUT : ', req.body);
 
     let data = req.body.data || {};
     res.json(data);
 });
 
-AppsRouter.delete('/', (req, res) => {
+AppsRouter.delete('/:appId/:username', (req, res) => {
     debug('AppsRouter DELETE : ', req.body);
 
     let data = req.body.data || {};
