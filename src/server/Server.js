@@ -12,6 +12,7 @@ import expressJwt from 'express-jwt';
 import bodyParser from 'body-parser';
 
 import LoginRouter from '../routes/Login';
+import AppsRouter from '../routes/Apps';
 
 import isAdmin from '../config/policy/isAdmin';
 
@@ -23,16 +24,24 @@ Server.use(bodyParser.urlencoded({
     extended: true
 })); // for parsing application/x-www-form-urlencoded
 
-/* Set Policies */
+
+/*************  Set Policies ************************/
 Server.all('/admin/*', isAdmin);
+
 Server.use('/api', expressJwt({
     secret: 'secret'
 })); // protect /api routes with JWT
+
 Server.use('/user', expressJwt({
     secret: 'secret'
 }).unless({
     path: ['/user/signin', '/user/signup', '/user/import/patient']
 })); // protect /user routes with JWT
+
+Server.use('/apps', expressJwt({
+    secret: 'secret'
+})); // protect /user routes with JWT
+
 
 // Send JSON error when Unauthorized error
 Server.use(function(err, req, res, next) {
@@ -47,7 +56,8 @@ Server.use(function(err, req, res, next) {
     }
 });
 
-/* Set routes */
+/*************  Set Routes ************************/
 Server.use('/user', LoginRouter);
+Server.use('/apps', AppsRouter);
 
 export default Server;

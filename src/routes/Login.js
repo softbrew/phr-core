@@ -8,18 +8,17 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
 let nano = require('nano')('http://localhost:5984');
-let users = nano.use('phr_users');
+let Users = nano.use('phr_users');
 let debug = require('debug')('src:routes/login');
 
 let LoginRouter = express.Router();
-let db = nano.db.use('phr_user');
 
 // Get user details
 LoginRouter.get('/:username', (req, res) => {
     debug('/:username : ', req.params.username);
 
     let username = req.params.username || '';
-    users.get(username, (err, user) => {
+    Users.get(username, (err, user) => {
         debug('/:username get user: ', err, ' user: ', user);
 
         if(user) {
@@ -49,7 +48,7 @@ LoginRouter.post('/signin', (req, res) => {
     // TODO: validate username and password
     debug('/signin : ', req.body);
 
-    users.get(req.body.username, (err, user) => {
+    Users.get(req.body.username, (err, user) => {
         debug('/signin get user: ', err, ' user: ', user);
 
         if(user) {
@@ -97,7 +96,7 @@ LoginRouter.post('/signup', (req, res) => {
     user.email = req.body.email;
     user.password = req.body.password;
     // Create a new User in PHR database
-    users.insert(user, user.username, (err, body) => {
+    Users.insert(user, user.username, (err, body) => {
         if(body) {
             debug('/signup create user: ', err, ' body: ', body);
 
