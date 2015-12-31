@@ -20,7 +20,8 @@ import Server from './server/Server';
 import d from 'debug';
 let debug = d('src:index');
 import config from '../config';
-console.log(config);
+
+console.log('Server start with configuration: ', config);
 
 // Serve Client Side files
 Server.use('/public', express.static(__dirname + config.staticFilesDirectory));
@@ -92,6 +93,7 @@ function onError(error) {
  */
 function onListening() {
     var addr = server.address();
-    var bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
+    var bind = (typeof addr === 'string') ? 'pipe ' + addr : 'port ' + addr.port;
     debug('Listening on ' + bind);
+    console.log(`Go to http://${config.hostAddress}:${config.hostPort}/public/login.html`);
 }
