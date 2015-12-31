@@ -26,7 +26,10 @@ AppsRouter.post('/:appId/:username', (req, res) => {
     App.insert(data, (err, body) => {
         if(body) {
             debug('/apps create : ', err, ' body: ', body);
-            res.json(body);
+            delete data.type;
+            data._id = body.id;
+            data._rev = body.rev;
+            res.json(data);
         } else {
             res.status(err.statusCode).json({
                 type: err.name,
@@ -69,17 +72,61 @@ AppsRouter.get('/:appId/:username', (req, res) => {
 });
 
 AppsRouter.put('/:appId/:username', (req, res) => {
-    debug('AppsRouter PUT : ', req.body);
+    let appId = req.params.appId;
+    let username = req.params.username;
+    debug('AppsRouter PUT : ', appId, username, req.query, req.body);
 
-    let data = req.body.data || {};
-    res.json(data);
+    let query = req.query || {};
+    let data = req.body || {};
+
+    let App = nano.use(`phr_apps_${appId}`);
+    // Categorize with User
+    data.type = username;
+
+    App.insert(data, (err, body) => {
+        if(body) {
+            debug('/apps update : ', err, ' body: ', body);
+            delete data.type;
+            data._id = body.id;
+            data._rev = body.rev;
+            res.json(data);
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
 });
 
 AppsRouter.delete('/:appId/:username', (req, res) => {
-    debug('AppsRouter DELETE : ', req.body);
+    let appId = req.params.appId;
+    let username = req.params.username;
+    debug('AppsRouter DELETE : ', appId, username, req.query, req.body);
 
-    let data = req.body.data || {};
-    res.json(data);
+    let query = req.query || {};
+    let data = req.body || {};
+
+    let App = nano.use(`phr_apps_${appId}`);
+    // Categorize with User
+    data.type = username;
+
+    App.destroy(query.id, query.rev, (err, body) => {
+        if(body) {
+            debug('/apps delete : ', err, ' body: ', body);
+            delete data.type;
+            data._id = body.id;
+            data._rev = body.rev;
+            res.json(data);
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
 });
 
 export default AppsRouter;

@@ -95,5 +95,5 @@ function onListening() {
     var addr = server.address();
     var bind = (typeof addr === 'string') ? 'pipe ' + addr : 'port ' + addr.port;
     debug('Listening on ' + bind);
-    console.log(`Go to http://${config.hostAddress}:${config.hostPort}/public/login.html`);
+    console.log(`\n\tGo to http://${config.hostAddress}:${config.hostPort}/public/login.html`);
 }

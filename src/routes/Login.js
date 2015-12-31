@@ -70,7 +70,7 @@ LoginRouter.post('/signin', (req, res) => {
             };
             // sending the profile inside the token
             let token = jwt.sign(newUser, 'secret', {
-                expiresIn: '1h'
+                expiresIn: '12h'
             });
             res.json({
                 token: token,
@@ -109,7 +109,7 @@ LoginRouter.post('/signup', (req, res) => {
             };
             // sending the profile inside the token
             let token = jwt.sign(newUser, 'secret', {
-                expiresIn: '1h'
+                expiresIn: '12h'
             });
 
             res.json({
