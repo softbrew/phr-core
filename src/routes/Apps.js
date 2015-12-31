@@ -69,10 +69,32 @@ AppsRouter.get('/:appId/:username', (req, res) => {
 });
 
 AppsRouter.put('/:appId/:username', (req, res) => {
-    debug('AppsRouter PUT : ', req.body);
+    let appId = req.params.appId;
+    let username = req.params.username;
+    debug('AppsRouter PUT : ', appId, username, req.query, req.body);
 
-    let data = req.body.data || {};
-    res.json(data);
+    let query = req.query || {};
+    let data = req.body || {};
+
+    let App = nano.use(`phr_apps_${appId}`);
+    // Categorize with User
+    data.type = username;
+
+    App.insert(data, (err, body) => {
+        if(body) {
+            debug('/apps update : ', err, ' body: ', body);
+            delete data.type;
+            data._id = body.id;
+            data._rev = body.rev;
+            res.json(data);
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
 });
 
 AppsRouter.delete('/:appId/:username', (req, res) => {
