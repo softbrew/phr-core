@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/server.js",
+    "init": "node ./init.js",
     "test": "npm test",
     "gulp": "gulp"
   },
@@ -44,6 +45,7 @@
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
     "jsonwebtoken": "^5.4.1",
+    "minimist": "^1.2.0",
     "nano": "^6.1.5",
     "source-map-support": "^0.3.3"
   }

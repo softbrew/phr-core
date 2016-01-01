@@ -14,3 +14,12 @@ Personal Health Record middleware for Patient which is capable of install/remove
 - Build application bundle using `npm run gulp`
 - Start server using `npm start`
 - Go to [http://localhost:8000/public/login.html](http://localhost:8000/public/login.html)
+
+**Setup Couch Database**
+
+If you running the server for first time, you can create database
+E.g. 'node init.js -u admin -p Admin123'
+
+Options:
+- -u : Couch database username
+- -p : Couch database user's password
