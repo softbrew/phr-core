@@ -22,6 +22,15 @@ const dbInfo = {
                 "map": "function(doc) {\n  emit(doc.type, doc);\n}"
             }
         }
+    }],
+    'phr_apps_appointments': [{
+        "_id": "_design/apps",
+        "language": "javascript",
+        "views": {
+            "by_type": {
+                "map": "function(doc) {\n  emit(doc.type, doc);\n}"
+            }
+        }
     }]
 };
 console.log(argv);
