@@ -16,10 +16,12 @@ Personal Health Record middleware for Patient which is capable of install/remove
 - Go to [http://localhost:8000/public/login.html](http://localhost:8000/public/login.html)
 
 **Setup Couch Database**
+have to
+If you running the server for first time, you can create database using following command;
+`node init.js -u USERNAME -p PASSWORD`
 
-If you running the server for first time, you can create database
-E.g. 'node init.js -u admin -p Admin123'
+E.g. `node init.js -u admin -p Admin123`
 
 Options:
-- -u : Couch database username
-- -p : Couch database user's password
+- -u : Couch database USERNAME
+- -p : Couch database PASSWORD for given USERNAME

@@ -21,12 +21,12 @@ AppsRouter.post('/:appId/:username', (req, res) => {
 
     let App = nano.use(`phr_apps_${appId}`);
     // Categorize with User
-    data.type = username;
+    data.appCategory = username;
 
     App.insert(data, (err, body) => {
         if(body) {
             debug('/apps create : ', err, ' body: ', body);
-            delete data.type;
+            delete data.appCategory;
             data._id = body.id;
             data._rev = body.rev;
             res.json(data);
@@ -49,15 +49,15 @@ AppsRouter.get('/:appId/:username', (req, res) => {
 
     let App = nano.use(`phr_apps_${appId}`);
     // Query with User
-    query.username = username;
+    query.appCategory = username;
 
-    App.view('apps', 'by_type', {"key": username}, (err, body) => {
+    App.view('apps', 'by_appCategory', {"key": username}, (err, body) => {
         if(body) {
             debug('/apps get : ', err, ' body: ', body);
             console.log(body.rows);
             let rows = [];
             for(let row of body.rows) {
-                delete row.value.type;
+                delete row.value.appCategory;
                 rows.push(row.value);
             }
             res.json(rows);
@@ -81,12 +81,12 @@ AppsRouter.put('/:appId/:username', (req, res) => {
 
     let App = nano.use(`phr_apps_${appId}`);
     // Categorize with User
-    data.type = username;
+    data.appCategory = username;
 
     App.insert(data, (err, body) => {
         if(body) {
             debug('/apps update : ', err, ' body: ', body);
-            delete data.type;
+            delete data.appCategory;
             data._id = body.id;
             data._rev = body.rev;
             res.json(data);
@@ -110,12 +110,12 @@ AppsRouter.delete('/:appId/:username', (req, res) => {
 
     let App = nano.use(`phr_apps_${appId}`);
     // Categorize with User
-    data.type = username;
+    data.appCategory = username;
 
     App.destroy(query.id, query.rev, (err, body) => {
         if(body) {
             debug('/apps delete : ', err, ' body: ', body);
-            delete data.type;
+            delete data.appCategory;
             data._id = body.id;
             data._rev = body.rev;
             res.json(data);
