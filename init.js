@@ -18,8 +18,8 @@ const dbInfo = {
         "_id": "_design/apps",
         "language": "javascript",
         "views": {
-            "by_type": {
-                "map": "function(doc) {\n  emit(doc.type, doc);\n}"
+            "by_appCategory": {
+                "map": "function(doc) {\n  emit(doc.appCategory, doc);\n}"
             }
         }
     }],
@@ -27,8 +27,8 @@ const dbInfo = {
         "_id": "_design/apps",
         "language": "javascript",
         "views": {
-            "by_type": {
-                "map": "function(doc) {\n  emit(doc.type, doc);\n}"
+            "by_appCategory": {
+                "map": "function(doc) {\n  emit(doc.appCategory, doc);\n}"
             }
         }
     }]
