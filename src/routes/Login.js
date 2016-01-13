@@ -27,7 +27,14 @@ LoginRouter.get('/:username', (req, res) => {
                 rev: user._rev,
                 username: user.username,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                address: user.address,
+                birthDate: user.birthDate,
+                gender: user.gender,
+                telecom: user.telecom,
+                fhirServerList: user.fhirServerList,
+                createdAt: user.createdAt,
+                modifiedAt: user.modifiedAt,
             };
 
             res.json({
@@ -116,6 +123,55 @@ LoginRouter.post('/signup', (req, res) => {
                 token: token,
                 user: newUser
             });
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
+});
+
+// Change User password
+LoginRouter.post('/pwChange/:username', (req, res) => {
+    let username = req.params.username;
+    debug('/pwChange : ', req.body);
+
+    // Create a new User in PHR database
+    Users.get(username, (err, user) => {
+        if(user) {
+            debug('/pwChange get user : ', err, ' user: ', user);
+
+            if(!(username === user.username &&
+                    req.body.password === user.password)) {
+                //if is invalid, return 401
+                res.status(400).json({
+                    error: 'Please chech and enter, current password correctly.'
+                });
+                return;
+            }
+
+            if(req.body.hasOwnProperty('newPassword')) {
+                user.password = req.body.newPassword;
+            }
+            user.modifiedAt = Date.now();
+
+            Users.insert(user, (err, newUser) => {
+                debug('/pwChange change password : ', err, newUser);
+                if(!err) {
+                    res.json({
+                        message: "Password changed successful."
+                    });
+                } else {
+                    res.status(err.statusCode).json({
+                        type: err.name,
+                        message: err.reason,
+                        error: err.error
+                    });
+                }
+            });
+
         } else {
             res.status(err.statusCode).json({
                 type: err.name,
