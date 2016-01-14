@@ -134,11 +134,11 @@ LoginRouter.post('/signup', (req, res) => {
 });
 
 // Change User password
-LoginRouter.post('/pwChange/:username', (req, res) => {
+LoginRouter.put('/pwChange/:username', (req, res) => {
     let username = req.params.username;
     debug('/pwChange : ', req.body);
 
-    // Create a new User in PHR database
+    // Get existing user form PHR database
     Users.get(username, (err, user) => {
         if(user) {
             debug('/pwChange get user : ', err, ' user: ', user);
@@ -162,6 +162,69 @@ LoginRouter.post('/pwChange/:username', (req, res) => {
                 if(!err) {
                     res.json({
                         message: "Password changed successful."
+                    });
+                } else {
+                    res.status(err.statusCode).json({
+                        type: err.name,
+                        message: err.reason,
+                        error: err.error
+                    });
+                }
+            });
+
+        } else {
+            res.status(err.statusCode).json({
+                type: err.name,
+                message: err.reason,
+                error: err.error
+            });
+        }
+    });
+});
+
+// Update User (Excluding some fileds)
+LoginRouter.put('/:username', (req, res) => {
+    let username = req.params.username;
+    debug('Update user : ', req.body);
+
+    // Get existing user form PHR database
+    Users.get(username, (err, user) => {
+        if(user) {
+            debug('Update user (get): ', err, ' user: ', user);
+
+            const valideFields = ['address', 'birthDate', 'gender', 'name', 'telecom', 'fhirServerList'];
+            for(let i of Object.keys(req.body)) {
+                if(valideFields.indexOf(i) > -1) {
+                    user[i] = req.body[i];
+                } else {
+                    res.status(400).json({
+                        error: `Not allowed to change '${i}' field.`
+                    });
+                    return;
+                }
+            }
+            user.modifiedAt = Date.now();
+
+            Users.insert(user, (err, updatedUser) => {
+                debug('Update user (updatedUser) : ', err, updatedUser);
+                if(!err) {
+                    let newUser = {
+                        id: user._id,
+                        rev: user._rev,
+                        username: user.username,
+                        email: user.email,
+                        name: user.name,
+                        address: user.address,
+                        birthDate: user.birthDate,
+                        gender: user.gender,
+                        telecom: user.telecom,
+                        fhirServerList: user.fhirServerList,
+                        createdAt: user.createdAt,
+                        modifiedAt: user.modifiedAt,
+                    };
+
+                    res.json({
+                        user: newUser
                     });
                 } else {
                     res.status(err.statusCode).json({
