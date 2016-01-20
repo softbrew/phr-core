@@ -13,6 +13,7 @@ import bodyParser from 'body-parser';
 
 import LoginRouter from '../routes/Login';
 import AppsRouter from '../routes/Apps';
+import FHIRRouter from '../routes/FHIR';
 
 import isAdmin from '../config/policy/isAdmin';
 
@@ -42,6 +43,10 @@ Server.use('/apps', expressJwt({
     secret: 'secret'
 })); // protect /user routes with JWT
 
+Server.use('/fhir', expressJwt({
+    secret: 'secret'
+})); // protect /user routes with JWT
+
 
 // Send JSON error when Unauthorized error
 Server.use(function(err, req, res, next) {
@@ -59,5 +64,6 @@ Server.use(function(err, req, res, next) {
 /*************  Set Routes ************************/
 Server.use('/user', LoginRouter);
 Server.use('/apps', AppsRouter);
+Server.use('/fhir', FHIRRouter);
 
 export default Server;
