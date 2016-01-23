@@ -73,7 +73,8 @@ LoginRouter.post('/signin', (req, res) => {
                 rev: user._rev,
                 username: user.username,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                fhirServerList: user.fhirServerList
             };
             // sending the profile inside the token
             let token = jwt.sign(newUser, 'secret', {
@@ -112,7 +113,8 @@ LoginRouter.post('/signup', (req, res) => {
                 rev: body.rev,
                 username: user.username,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                fhirServerList: user.fhirServerList
             };
             // sending the profile inside the token
             let token = jwt.sign(newUser, 'secret', {
