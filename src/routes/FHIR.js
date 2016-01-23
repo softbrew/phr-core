@@ -65,4 +65,32 @@ FHIRRouter.get('/:resource', (req, res) => {
     });
 });
 
+// Get next pages of resources
+FHIRRouter.get('/', (req, res) => {
+    // Create Resource URL
+    debug('Get next pages from ', req.query);
+
+    // Decode token and get user data
+    let token = req.headers.authorization.split(' ')[1];
+    let decoded = jwt.decode(token);
+    debug('GET ', token, decoded);
+
+    let fhirServerURL = decoded.fhirServerList[0].url;
+
+    axios.get('', {
+        baseURL: fhirServerURL,
+        params: req.query || {}
+    }).then(response => {
+        debug(`GET : `, JSON.stringify(response.data));
+        res.json(response.data);
+    }).catch(err => {
+        console.error(err);
+        res.status(404).json({
+            type: 'not_found',
+            message: `Unable to import ${req.params.resource}.`,
+            error: new Error(`Unable to import ${req.params.resource}.`)
+        });
+    });
+});
+
 export default FHIRRouter;
